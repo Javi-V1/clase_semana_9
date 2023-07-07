@@ -1,4 +1,5 @@
-﻿using Capa_Logica.Ayudante;
+﻿using Capa_Acceso_Datos.Txt;
+using Capa_Logica.Ayudante;
 using Capa_Modelo.Cliente;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Capa_Logica.Orquestador_Ejemplo
 {
     public class Orquestador_Ejemplo
     {
+        private Queue<Persona> cola_ventanilla = new Queue<Persona> ();
+        private Queue<Persona> cola_plataforma = new Queue<Persona>();
         public Orquestador_Ejemplo()
         {
             
@@ -73,6 +76,44 @@ namespace Capa_Logica.Orquestador_Ejemplo
             Estudiante nuevoEstudiante = ayundante.Deserialize_Modelo<Estudiante>(json);
             
             return nuevoEstudiante;
+        }
+        public void EjercicioPractico() {
+            string contenido = Lea_ClientesJSON();
+            List<Persona> personas = DeserializeJSON <List<Persona>>(contenido);
+            CreeColas(personas);
+           
+        }
+
+        public string Lea_ClientesJSON() { 
+
+            Lectura_Txt lectura = new Lectura_Txt();
+
+            string contenido =lectura.Lee_Archivo("C:\\Users\\laboratorio\\source\\repos\\Programacion_3_Clase_8\\Hilos\\Clientes.json");
+
+            return contenido;
+        }
+
+        public T DeserializeJSON<T>(string contenido) {
+
+            Ayundate_JSON ayundante = new Ayundate_JSON();
+
+            var resultado =ayundante.Deserialize_Modelo<T>(contenido);
+
+            return resultado;
+        }
+        public void CreeColas(List<Persona> personas) {
+
+            foreach (var persona in personas)
+            {
+                if (persona.Tramite=="Ventanilla")
+                {
+                    cola_ventanilla.Enqueue(persona);
+                }
+                else
+                {
+                    cola_plataforma.Enqueue(persona);
+                }
+            }        
         }
 
     }
