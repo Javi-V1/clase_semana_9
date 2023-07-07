@@ -7,6 +7,7 @@ namespace Capa_Modelo.Cliente
         public string Identificacion { get; set; }
         public int Telefono { get; set; }
         public string Tramite { get; set; }
+        public string Universidad { get; set; }
 
     }
 }
