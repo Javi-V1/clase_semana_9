@@ -79,9 +79,13 @@ namespace Capa_Logica.Orquestador_Ejemplo
         }
         public void EjercicioPractico() {
             string contenido = Lea_ClientesJSON();
+
             List<Persona> personas = DeserializeJSON <List<Persona>>(contenido);
+
             CreeColas(personas);
-           
+
+            Plataformista();
+            Cajero();
         }
 
         public string Lea_ClientesJSON() { 
@@ -114,6 +118,63 @@ namespace Capa_Logica.Orquestador_Ejemplo
                     cola_plataforma.Enqueue(persona);
                 }
             }        
+        }
+
+        public void Plataformista()
+        {
+            foreach (Persona persona in cola_plataforma)
+            {
+                Console.WriteLine("Se esta atendiando a la persona en plataforma: " + persona.Nombre);
+
+                int tiempo_Espera = Tiempo_de_espera_de_acuerdo(persona.Telefono);
+
+                Thread.Sleep(tiempo_Espera);
+
+                if (persona.Identificacion == "")
+                {
+                    Identificacion_Vacia(persona.Identificacion);
+                    //cola_plataforma.Enqueue(cola_plataforma.Dequeue());
+                    Persona aux = cola_ventanilla.Dequeue();
+                    cola_ventanilla.Enqueue(aux);
+                }
+            }
+        }
+
+        public void Cajero()
+        {
+            foreach (Persona persona in cola_ventanilla)
+            {
+                Console.WriteLine("Se esta atendiando a la persona en ventanilla: " + persona.Nombre);
+
+                int tiempo_Espera = Tiempo_de_espera_de_acuerdo(persona.Telefono);
+
+                Thread.Sleep(tiempo_Espera);
+
+                if(persona.Identificacion == "") // string.isEmptyorNull(_identificacion) / null / string.Empty // hay distintas maneras de evaluar si esta vacio ese campo
+                {
+                    persona.Identificacion = Identificacion_Vacia(persona.Identificacion);
+                    Persona aux = cola_ventanilla.Dequeue();
+                    cola_ventanilla.Enqueue(aux);
+                }
+            }
+        }
+
+        public int Tiempo_de_espera_de_acuerdo(int _telefono)
+        {
+            if (_telefono < 5)
+            {
+                return 100;
+            }
+            else
+            {
+                return 300;
+            }
+        }
+
+        public string Identificacion_Vacia(string _identificacion)
+        {
+            _identificacion = "Default"; 
+            return _identificacion;
         }
 
     }
