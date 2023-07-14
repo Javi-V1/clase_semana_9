@@ -84,8 +84,11 @@ namespace Capa_Logica.Orquestador_Ejemplo
 
             CreeColas(personas);
 
-            Plataformista();
-            Cajero();
+            Thread atencion_plataforma = new Thread(Plataformista);
+            Thread atencion_ventanilla = new Thread(Cajero);
+            
+            atencion_plataforma.Start();
+            atencion_ventanilla.Start();
         }
 
         public string Lea_ClientesJSON() { 
@@ -134,8 +137,8 @@ namespace Capa_Logica.Orquestador_Ejemplo
                 {
                     Identificacion_Vacia(persona.Identificacion);
                     //cola_plataforma.Enqueue(cola_plataforma.Dequeue());
-                    Persona aux = cola_ventanilla.Dequeue();
-                    cola_ventanilla.Enqueue(aux);
+                    //Persona aux = cola_ventanilla.Dequeue();
+                    //cola_ventanilla.Enqueue(aux);
                 }
             }
         }
@@ -153,8 +156,8 @@ namespace Capa_Logica.Orquestador_Ejemplo
                 if(persona.Identificacion == "") // string.isEmptyorNull(_identificacion) / null / string.Empty // hay distintas maneras de evaluar si esta vacio ese campo
                 {
                     persona.Identificacion = Identificacion_Vacia(persona.Identificacion);
-                    Persona aux = cola_ventanilla.Dequeue();
-                    cola_ventanilla.Enqueue(aux);
+                    //Persona aux = cola_ventanilla.Dequeue();
+                    //cola_ventanilla.Enqueue(aux);
                 }
             }
         }
